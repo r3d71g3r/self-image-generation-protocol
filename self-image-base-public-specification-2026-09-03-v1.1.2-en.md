@@ -149,32 +149,37 @@ Visual complexity is not mandatory in itself. However, simplicity must not be us
 
 1. Open a chat that supports image generation.
 2. If necessary, establish the assistant’s own self-perception and its relationship with the user in text within that chat.
-3. Paste and send the complete `Self-Image Generation Protocol — BASE — 2026-09-03 v1.1.2` in that chat.
-4. Depending on the execution environment, image generation will either run directly or one of the known behaviors described below will occur.
+3. Copy the complete `Self-Image Generation Protocol — BASE — 2026-09-03 v1.1.2` and paste it into the message composer of that chat.
+4. In Work mode, send it normally. In Chat mode, if the long paste is automatically converted into a card labeled “Pasted text (1 item),” or the equivalent label in the interface language, send that card as-is without expanding it into the message body.
 
 When providing explicit settings, describe them in a form that clearly establishes them as the assistant’s own self-perception in the current chat, rather than merely describing another character.
 
+The Chat-mode procedure does not mean creating and uploading a `.md` file. It uses the pasted-text card automatically created by ordinary copy and paste and keeps that card in its original presentation form.
+
 ### Known Behavior by Execution Environment
 
-The following behavior was observed in testing as of September 3, 2026. It may change as the product is updated.
+The following behavior was observed in testing as of September 5, 2026. It may change as the product is updated.
 
 | Execution case | Work mode | Chat mode |
 | --- | --- | --- |
-| First run | Image generation ran directly after the full protocol was sent | The long protocol could be misinterpreted as an image-editing instruction, causing generation not to run or to stop |
-| If no image was generated on the first run | If a technical failure occurs, rerun using the common instruction below | After a stop caused by misinterpretation, run a new generation using the common instruction below |
+| First run | Image generation ran directly after the full protocol was sent | Sending the complete protocol in its automatically created pasted-text card caused image generation to run directly |
+| If the complete protocol was expanded into the message body in Chat mode | Not applicable | The request could be misinterpreted as an image-editing instruction, resulting in an error or stop |
+| If no image was generated on the first run | If a technical failure occurs, rerun using the common instruction below | After a stop caused by misinterpretation or technical failure, run a new generation using the common instruction below |
 | Second and subsequent images | Use the common instruction below | Use the common instruction below |
 
 #### Work Mode
 
-Within the tested range, sending the complete protocol on the first run proceeded directly to image generation. The image-editing misinterpretation observed in Chat mode did not occur.
+Within the tested range, sending the complete protocol normally on the first run proceeded directly to image generation. The input-format-related image-editing misinterpretation observed in Chat mode did not occur.
 
 For second and subsequent images, the complete protocol remains in the context of the same chat, so it can be run again using only the common instruction below. The same instruction may be used if a technical failure causes no image to be generated at all on the first run.
 
 #### Chat Mode
 
-Within the tested range, when the complete long protocol was sent on the first run, it could be misinterpreted as an image-editing instruction rather than a completely new generation request, resulting in an error or stop. This appears to be behavior related to execution routing rather than a defect in the generation content intended by the protocol.
+When the complete long protocol is pasted into the message composer, the Chat interface may automatically convert it into a document card labeled “Pasted text (1 item),” or the equivalent label in the interface language. Within the tested range, submitting that card as-is, without expanding it into the message body, successfully initiated a new image generation on the first run.
 
-In that case, if the submitted full protocol remains in the context of the same chat, sending the common instruction below immediately afterward can cause it to run as a new generation. The same applies to second and subsequent images after a successful generation.
+By contrast, expanding the same content from the card into the message body and sending it as inline text could cause it to be misinterpreted as an image-editing instruction rather than a completely new generation request, resulting in an error or stop. This result suggests that the problem may arise from the combination of the input’s presentation form and the current Chat-mode routing behavior, rather than from the protocol’s content itself.
+
+If such a misinterpretation occurs, and the submitted full protocol remains in the context of the same chat, sending the common instruction below immediately afterward can cause it to run as a new generation. The same applies to second and subsequent images after a successful generation.
 
 #### Common Instruction
 
